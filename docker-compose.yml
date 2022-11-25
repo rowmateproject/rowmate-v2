@@ -19,39 +19,39 @@ services:
     networks:
       - backend
       - public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cal.rule=Host(`api.dev.rowmate.org`)"
+      - "traefik.http.routers.cal.entrypoints=web"
+      - "traefik.http.services.cal.loadbalancer.server.port=8081"
 
   frontend:
     image: rowmate-v2-frontend
     build: https://github.com/rowmateproject/rowmate-v2-frontend.git
     ports:
-      - "8080:8080"
+      - "8082:8080"
     networks:
       - public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cal.rule=Host(`app.dev.rowmate.org`)"
+      - "traefik.http.routers.cal.entrypoints=web"
+      - "traefik.http.services.cal.loadbalancer.server.port=8082"
 
-  nginx:
-    image: nginx:1.15-alpine
+  traefik:
+    image: traefik:v2.0
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
+      - "8080:8080"
     volumes:
-      - ./data/nginx:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    networks:
-      - public
-      - backend
-    depends_on:
-      - api
-      - frontend
-      - certbot
-    
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   mongodb_data_container:
