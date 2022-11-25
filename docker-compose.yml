@@ -21,7 +21,7 @@ services:
       - public
     labels:
       - traefik.http.routers.api.rule=Host(`api.dev.rowmate.org`)
-      - traefik.port=8081
+      - traefik.http.services.api.loadbalancer.server.port=8081
 
   frontend:
     image: rowmate-v2-frontend
@@ -31,11 +31,8 @@ services:
     networks:
       - public
     labels:
-      - traefik.enable=true
-      - traefik.backend=frontend
-      - traefik.docker.network=public
-      - traefik.frontend.rule=Host:app.dev.rowmate.org
-      - traefik.port=8082
+      - traefik.http.routers.frontend.rule=Host(`app.dev.rowmate.org`)
+      - traefik.http.services.frontend.loadbalancer.server.port=8082
 
   traefik:
     image: traefik:latest
