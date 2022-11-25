@@ -41,7 +41,7 @@ services:
       - traefik.port=8082
 
   traefik:
-    image: traefik:v2.0
+    image: traefik:latest
     container_name: traefik
     command:
       - "--api.insecure=true"
