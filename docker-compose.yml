@@ -16,9 +16,25 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=app@rowmate.org"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=app@rowmate.org"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      
+    labels:
+      - "traefik.http.middlewares.to-https.redirectscheme.scheme=https"
+      - traefik.http.routers.to-https.rule=HostRegexp(`{host:.+}`)
+      - traefik.http.routers.to-https.entrypoints=http
+      - traefik.http.routers.to-https.middlewares=to-https
+
+      - traefik.http.routers.traefik.rule=Host(`traefik.dev.rowmate.org`)
+      - traefik.http.routers.traefik.entrypoints=https
+      - traefik.http.routers.traefik.middlewares=auth
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+
     restart: unless-stopped
     ports:
       - "80:80"
@@ -43,7 +59,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`app.dev.rowmate.org`)"
       - "traefik.http.routers.app.entrypoints=websecure"
-
+      - "traefik.http.routers.https.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.https.tls=true"
 
   api:
     image: rowmate-v2-backend
