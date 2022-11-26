@@ -58,10 +58,8 @@ services:
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certresolver=letsencrypt"
       - "traefik.http.routers.app.tls=true"
-      - "traefik.http.middlewares.app-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.app-to-https.rule=Host(`app.dev.rowmate.org`)"
-      - "traefik.http.routers.app-to-https.entrypoints=web"
-      - "traefik.http.routers.app-to-https.middlewares=to-https"
+      - "traefik.http.middlewares.app-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.app-https.redirectscheme.permanent=true"
 
   api:
     image: rowmate-v2-backend
@@ -83,10 +81,8 @@ services:
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.routers.api.tls=true"
-      - "traefik.http.middlewares.api-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.api-to-https.rule=Host(`api.dev.rowmate.org`)"
-      - "traefik.http.routers.api-to-https.entrypoints=web"
-      - "traefik.http.routers.api-to-https.middlewares=to-https"
+      - "traefik.http.middlewares.api-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.api-https.redirectscheme.permanent=true"
 
 volumes:
   mongodb_data_container:
