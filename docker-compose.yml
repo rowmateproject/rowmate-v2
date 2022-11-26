@@ -6,23 +6,6 @@ services:
     networks:
       - backend
 
-  api:
-    image: rowmate-v2-backend
-    build: https://github.com/rowmateproject/rowmate-v2-backend.git#main
-    working_dir: /rowmate-backend
-    environment:
-      DATABASE_URL: mongodb://mongodb:27017
-    ports:
-      - "8081:80"
-    depends_on:
-      - mongodb
-    networks:
-      - backend
-      - public
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.dev.rowmate.org`)"
-      - "traefik.http.routers.api.entrypoints=web"
 
   traefik:
     image: traefik:latest
@@ -41,6 +24,7 @@ services:
     networks:
       - public
 
+
   frontend:
     image: rowmate-v2-frontend
     build: https://github.com/rowmateproject/rowmate-v2-frontend.git
@@ -48,10 +32,33 @@ services:
       - "8082:8080"
     networks:
       - public
+    depends_on:
+      - traefik
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`app.dev.rowmate.org`)"
       - "traefik.http.routers.app.entrypoints=web"
+
+
+  api:
+    image: rowmate-v2-backend
+    build: https://github.com/rowmateproject/rowmate-v2-backend.git#main
+    working_dir: /rowmate-backend
+    environment:
+      DATABASE_URL: mongodb://mongodb:27017
+    ports:
+      - "8081:80"
+    depends_on:
+      - mongodb
+      - traefik
+    networks:
+      - backend
+      - public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.dev.rowmate.org`)"
+      - "traefik.http.routers.api.entrypoints=web"
+
 
 volumes:
   mongodb_data_container:
