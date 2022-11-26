@@ -56,7 +56,12 @@ services:
       - public
     depends_on:
       - traefik
+      - api
     labels:
+      - "traefik.http.middlewares.app-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.app-to-https.rule=Host(`app.dev.rowmate.org`)"
+      - "traefik.http.routers.app-to-https.entrypoints=http"
+      - "traefik.http.routers.app-to-https.middlewares=to-https"
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`app.dev.rowmate.org`)"
       - "traefik.http.routers.app.entrypoints=websecure"
