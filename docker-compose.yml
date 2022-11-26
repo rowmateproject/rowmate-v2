@@ -21,6 +21,9 @@ services:
       - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.email=app@rowmate.org"
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+
       
     labels:
       - traefik.http.routers.traefik.rule=Host(`traefik.dev.rowmate.org`)
@@ -55,11 +58,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`app.dev.rowmate.org`)"
-      - "traefik.http.routers.app.entrypoints=websecure,web"
+      - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certresolver=letsencrypt"
       - "traefik.http.routers.app.tls=true"
-      - "traefik.http.middlewares.app.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.app.redirectscheme.permanent=true"
 
   api:
     image: rowmate-v2-backend
@@ -78,11 +79,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`api.dev.rowmate.org`)"
-      - "traefik.http.routers.api.entrypoints=websecure,web"
+      - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.routers.api.tls=true"
-      - "traefik.http.middlewares.api.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.api.redirectscheme.permanent=true"
 
 volumes:
   mongodb_data_container:
