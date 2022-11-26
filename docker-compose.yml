@@ -83,7 +83,7 @@ services:
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.routers.api.tls=true"
-      - "traefik.http.middlewares.app-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.api-to-https.redirectscheme.scheme=https"
       - "traefik.http.routers.api-to-https.rule=Host(`api.dev.rowmate.org`)"
       - "traefik.http.routers.api-to-https.entrypoints=http"
       - "traefik.http.routers.api-to-https.middlewares=to-https"
