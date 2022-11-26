@@ -20,8 +20,9 @@ services:
       - backend
       - public
     labels:
-      - traefik.http.routers.api.rule=Host(`api.dev.rowmate.org`)
-      - traefik.http.services.api.loadbalancer.server.port=8081
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.dev.rowmate.org`)"
+      - "traefik.http.routers.api.entrypoints=web"
 
   traefik:
     image: traefik:latest
