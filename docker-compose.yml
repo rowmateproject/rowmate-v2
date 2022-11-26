@@ -23,17 +23,6 @@ services:
       - traefik.http.routers.api.rule=Host(`api.dev.rowmate.org`)
       - traefik.http.services.api.loadbalancer.server.port=8081
 
-  frontend:
-    image: rowmate-v2-frontend
-    build: https://github.com/rowmateproject/rowmate-v2-frontend.git
-    ports:
-      - "8082:8080"
-    networks:
-      - public
-    labels:
-      - traefik.http.routers.frontend.rule=Host(`app.dev.rowmate.org`)
-      - traefik.http.services.frontend.loadbalancer.server.port=8082
-
   traefik:
     image: traefik:latest
     container_name: traefik
@@ -48,6 +37,18 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  frontend:
+    image: rowmate-v2-frontend
+    build: https://github.com/rowmateproject/rowmate-v2-frontend.git
+    ports:
+      - "8082:8080"
+    networks:
+      - public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`frontend.dev.rowmate.org`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
 
 volumes:
   mongodb_data_container:
