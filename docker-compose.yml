@@ -24,9 +24,9 @@ services:
       
     labels:
       - "traefik.http.middlewares.to-https.redirectscheme.scheme=https"
-      - traefik.http.routers.to-https.rule=HostRegexp(`{host:.+}`)
-      - traefik.http.routers.to-https.entrypoints=http
-      - traefik.http.routers.to-https.middlewares=to-https
+      - "traefik.http.routers.to-https.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.to-https.entrypoints=http"
+      - "traefik.http.routers.to-https.middlewares=to-https"
 
       - traefik.http.routers.traefik.rule=Host(`traefik.dev.rowmate.org`)
       - traefik.http.routers.traefik.entrypoints=https
