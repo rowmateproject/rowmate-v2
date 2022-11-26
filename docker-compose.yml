@@ -23,11 +23,6 @@ services:
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       
     labels:
-      - "traefik.http.middlewares.to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.to-https.rule=HostRegexp(`{host:.+}`)"
-      - "traefik.http.routers.to-https.entrypoints=http"
-      - "traefik.http.routers.to-https.middlewares=to-https"
-
       - traefik.http.routers.traefik.rule=Host(`traefik.dev.rowmate.org`)
       - traefik.http.routers.traefik.entrypoints=https
       - traefik.http.routers.traefik.middlewares=auth
@@ -58,15 +53,15 @@ services:
       - traefik
       - api
     labels:
-      - "traefik.http.middlewares.app-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.app-to-https.rule=Host(`app.dev.rowmate.org`)"
-      - "traefik.http.routers.app-to-https.entrypoints=http"
-      - "traefik.http.routers.app-to-https.middlewares=to-https"
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`app.dev.rowmate.org`)"
       - "traefik.http.routers.app.entrypoints=websecure"
       - "traefik.http.routers.app.tls.certresolver=letsencrypt"
       - "traefik.http.routers.app.tls=true"
+      - "traefik.http.middlewares.app-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.app-to-https.rule=Host(`app.dev.rowmate.org`)"
+      - "traefik.http.routers.app-to-https.entrypoints=http"
+      - "traefik.http.routers.app-to-https.middlewares=to-https"
 
   api:
     image: rowmate-v2-backend
@@ -88,6 +83,10 @@ services:
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.routers.api.tls=true"
+      - "traefik.http.middlewares.app-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.api-to-https.rule=Host(`api.dev.rowmate.org`)"
+      - "traefik.http.routers.api-to-https.entrypoints=http"
+      - "traefik.http.routers.api-to-https.middlewares=to-https"
 
 volumes:
   mongodb_data_container:
